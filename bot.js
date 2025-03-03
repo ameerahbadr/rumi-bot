@@ -68,19 +68,18 @@ async function postQuote() {
 }
 
 // Schedule posts once a day at 1:35 PM MST
-//cron.schedule('11 11 * * *', () => {
-//  console.log('Running scheduled post...');
-//  postQuote().catch(err => console.error('Error posting quote:', err));
-//}, {
-//  timezone: 'America/Chicago',
-//});
+cron.schedule('11 11 * * *', () => {
+console.log('Running scheduled post...');
+ postQuote().catch(err => console.error('Error posting quote:', err));
+}, {
+  timezone: 'America/Chicago',});
 
 // Test the bot locally
 console.log('Rumi Bot is running. Press Ctrl+C to stop.');
 authenticate().catch(err => console.error('Authentication failed:', err));
 
 // Test the bot locally
-console.log('Rumi Bot is running. Press Ctrl+C to stop.');
-authenticate()
-  .then(() => postQuote()) // Manually call postQuote after authentication
-  .catch(err => console.error('Authentication failed:', err));
+//console.log('Rumi Bot is running. Press Ctrl+C to stop.');
+//authenticate()
+  //.then(() => postQuote()) // Manually call postQuote after authentication
+  //.catch(err => console.error('Authentication failed:', err));
