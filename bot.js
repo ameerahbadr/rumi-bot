@@ -70,6 +70,7 @@ async function postQuote() {
     text: quote,
     createdAt: new Date().toISOString(),
   });
+  console.log('Bot is running at:', new Date().toISOString());
 
   console.log('Quote posted successfully!');
 }
