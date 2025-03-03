@@ -2,7 +2,7 @@ name: Run Rumi Quote Bot Daily
 
 on:
   schedule:
-    - cron: '11 11 * * *'  # Runs at 11:11 AM 
+        - cron: '*/5 * * * *'  # Runs every 5 minutes (for testing)
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
