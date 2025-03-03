@@ -38,21 +38,28 @@ function getRandomQuote() {
   return randomQuote;
 }
 
-// Authenticate with Bluesky
 async function authenticate() {
-  try {
-    const payload = {
-      identifier: process.env.BLUESKY_HANDLE,
-      password: process.env.BLUESKY_PASSWORD,
-    };
-    console.log('Payload:', payload);
-
-    const response = await agent.login(payload);
-    console.log('Authenticated with Bluesky:', response.data);
-  } catch (err) {
-    console.error('Authentication failed:', err.response ? err.response.data : err.message);
+    try {
+      const handle = process.env.BLUESKY_HANDLE;
+      const password = process.env.BLUESKY_PASSWORD;
+  
+      // Debugging log to check if secrets are being pulled
+      console.log('Handle:', handle);
+      console.log('Password:', password ? '****' : 'Not set');  // Don't log the password for security reasons
+  
+      const payload = {
+        identifier: handle,
+        password: password,
+      };
+      console.log('Payload:', payload);
+  
+      const response = await agent.login(payload);
+      console.log('Authenticated with Bluesky:', response.data);
+    } catch (err) {
+      console.error('Authentication failed:', err.response ? err.response.data : err.message);
+    }
   }
-}
+  
 
 // Function to post a quote
 async function postQuote() {
@@ -77,6 +84,8 @@ console.log('Running scheduled post...');
 // Test the bot locally
 console.log('Rumi Bot is running. Press Ctrl+C to stop.');
 authenticate().catch(err => console.error('Authentication failed:', err));
+
+
 
 // Test the bot locally
 //console.log('Rumi Bot is running. Press Ctrl+C to stop.');
