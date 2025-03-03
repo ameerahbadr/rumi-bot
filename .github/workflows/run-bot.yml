@@ -26,4 +26,4 @@ jobs:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
 
-        run: node bot.js  # Replace with the correct script name if needed
+        run: node bot.js  
