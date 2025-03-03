@@ -1,0 +1,29 @@
+name: Run Rumi Quote Bot Daily
+
+on:
+  schedule:
+    - cron: '11 11 * * *'  # Runs at 11:11 AM 
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.13.1
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the bot
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
+
+        run: node bot.js  # Replace with the correct script name if needed
