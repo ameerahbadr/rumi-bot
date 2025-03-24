@@ -1,12 +1,10 @@
 const { BskyAgent } = require('@atproto/api');
-const cron = require('node-cron');
 const fs = require('fs');
 require('dotenv').config(); // Load environment variables
 
 // Debug: Log environment variables
 console.log('Username:', process.env.BLUESKY_HANDLE);
 console.log('Password:', process.env.BLUESKY_PASSWORD ? '****' : 'Not set');
-console.log('Loading .env file from:', require('path').resolve('.env'));
 
 // Initialize the Bluesky agent
 const agent = new BskyAgent({ service: 'https://bsky.social' });
@@ -55,8 +53,10 @@ async function authenticate() {
 
     const response = await agent.login(payload);
     console.log('Authenticated with Bluesky:', response.data);
+    return true;
   } catch (err) {
     console.error('Authentication failed:', err.response ? err.response.data : err.message);
+    return false;
   }
 }
 
@@ -65,23 +65,43 @@ async function postQuote() {
   const quote = getRandomQuote();
   console.log(`Posting quote: ${quote}`);
 
-  await agent.post({
-    text: quote,
-    createdAt: new Date().toISOString(),
-  });
-  console.log('Quote posted successfully at:', new Date().toISOString());
+  try {
+    await agent.post({
+      text: quote,
+      createdAt: new Date().toISOString(),
+    });
+    console.log('Quote posted successfully at:', new Date().toISOString());
+    return true;
+  } catch (err) {
+    console.error('Error posting quote:', err);
+    return false;
+  }
 }
 
-// Schedule posts once a day at 11:11 AM
-cron.schedule('11 11 * * *', () => {
-  console.log('Running scheduled post...');
-  authenticate()
-    .then(() => postQuote())
-    .catch(err => console.error('Error posting quote:', err));
-}, {
-  timezone: 'America/Chicago',
-});
+// Main function to run the bot
+async function runBot() {
+  console.log('Starting Rumi Quote Bot at', new Date().toISOString());
+  
+  try {
+    const isAuthenticated = await authenticate();
+    if (!isAuthenticated) {
+      console.error('Failed to authenticate. Exiting...');
+      process.exit(1);
+    }
+    
+    const isPosted = await postQuote();
+    if (!isPosted) {
+      console.error('Failed to post quote. Exiting...');
+      process.exit(1);
+    }
+    
+    console.log('Bot execution completed successfully at', new Date().toISOString());
+    process.exit(0);
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    process.exit(1);
+  }
+}
 
-// Test the bot locally
-console.log('Rumi Bot is running. Press Ctrl+C to stop.');
-authenticate().catch(err => console.error('Authentication failed:', err));
+// Run the bot
+runBot();
